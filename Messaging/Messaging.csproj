@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Title>Serial based communcations between computer and microcontrollers.</Title>
+    <Authors>Kashif Baig</Authors>
+    <Copyright>2024 Kashif Baig</Copyright>
+  </PropertyGroup>
+
+</Project>

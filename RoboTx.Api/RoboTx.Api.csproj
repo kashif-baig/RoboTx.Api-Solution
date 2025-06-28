@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+    <Title>Robo-Tx API that commuicates with Robo-Tx firmware on Arduino</Title>
+    <Authors>Kashif Baig</Authors>
+    <Copyright>2025 Kashif Baig</Copyright>
+    <PackageProjectUrl>https://www.cohesivecomputing.co.uk/robo-tx/</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Messaging\Enums.cs" Link="Messaging\Enums.cs" />
+    <Compile Include="..\Messaging\IDeserializableMessage.cs" Link="Messaging\IDeserializableMessage.cs" />
+    <Compile Include="..\Messaging\IDeserializableMessageFactory.cs" Link="Messaging\IDeserializableMessageFactory.cs" />
+    <Compile Include="..\Messaging\MessageListener.cs" Link="Messaging\MessageListener.cs" />
+    <Compile Include="..\Messaging\MessageSender.cs" Link="Messaging\MessageSender.cs" />
+    <Compile Include="..\Messaging\SerializableMessage.cs" Link="Messaging\SerializableMessage.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Messaging\" />
+  </ItemGroup>
+
+</Project>
