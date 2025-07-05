@@ -307,57 +307,7 @@ namespace RoboTx.Api
         /// </summary>
         public Digital Digital => _digital;
 
-
-        private volatile int _prevIRCommand = -1;
-        private DateTime _lastIRCommandTime = DateTime.MinValue;
-
-        /// <summary>
-        /// Gets the value and pressed state of an IR command button if one has been received by pressing a button on an IR remote control.
-        /// </summary>
-        /// <returns>A tuple consisting of the IR command code and its pressed state. A value of -1 for the IR command
-        /// indicates none received. A value of true for the pressed state indicates button in pressed state.
-        /// False indicates button released.</returns>
-        public IrCommand GetIRCommand()
-        {
-            lock (_irCommandReceivedQueue)
-            {
-                if (_irCommandReceivedQueue.Count != 0)
-                {
-                    (int peekCmd, DateTime cmdTime) = _irCommandReceivedQueue.Peek();
-
-                    if (_prevIRCommand == -1)
-                    {
-                        _irCommandReceivedQueue.Dequeue();
-                        _lastIRCommandTime = cmdTime;
-                        _prevIRCommand = peekCmd;
-                        return new IrCommand { Code = peekCmd, ButtonPressed = true }; //(peekCmd, true);
-                    }
-                    if (peekCmd != _prevIRCommand)
-                    {
-                        int tmpCmd = _prevIRCommand;
-                        _prevIRCommand = -1;
-                        return new IrCommand { Code = tmpCmd, ButtonPressed = false, ButtonReleased = true };//(tmpCmd, false);
-                    }
-                    if (cmdTime.Subtract(_lastIRCommandTime).TotalSeconds < .15)
-                    {
-                        _irCommandReceivedQueue.Dequeue();
-                        _lastIRCommandTime = cmdTime;
-                        return new IrCommand { Code = -1, ButtonPressed = false };//(-1, false);
-                    }
-                    else
-                    {
-                        _prevIRCommand = -1;
-                    }
-                }
-                else if (_prevIRCommand != -1 && DateTime.Now.Subtract(_lastIRCommandTime).TotalSeconds > .15)
-                {
-                    int tmpCmd = _prevIRCommand;
-                    _prevIRCommand = -1;
-                    return new IrCommand { Code = tmpCmd, ButtonPressed = false, ButtonReleased = true };//(tmpCmd, false);
-                }
-                return new IrCommand { Code = -1, ButtonPressed = false }; //(-1, false);
-            }
-        }
+        internal Queue<(int, DateTime)> IrCommandReceivedQueue { get { return _irCommandReceivedQueue; }  }
 
         internal void QueueIrCommand(int irCommand)
         {

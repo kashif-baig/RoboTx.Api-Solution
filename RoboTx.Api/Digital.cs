@@ -6,6 +6,7 @@ namespace RoboTx.Api
     /// Configures and reports digital inputs via Arduino pins defined in the firmware profile. By default
     /// the input pins are A0 to A4, but can be overridden for a specific profile using firmware macro DIGITAL_INPUT_PINS.
     /// Digital inputs are identified by their index position. I.e. index 0 by default corresponds to A0, index 1 to A1 etc.
+    /// Also reports received IR commands sent by an IR remote control.
     /// </summary>
     public sealed class Digital
     {
@@ -52,34 +53,6 @@ namespace RoboTx.Api
         /// The corresponding pin must be <see cref="EnableInputs(int[])">enabled</see> for digital input before values become available.
         /// </summary>
         public DigitalInput IN4 { get; }
-
-        /*
-        /// <summary>
-        /// Gets the digital reading for input 0 whose value is either true or false.
-        /// The corresponding pin must be <see cref="EnableInputs(int[])">enabled</see> for digital input before values become available.
-        /// </summary>
-        public bool IN0 { get => _inputState[0]; }
-        /// <summary>
-        /// Gets the digital reading for input 1 whose value is either true or false.
-        /// The corresponding pin must be <see cref="EnableInputs(int[])">enabled</see> for digital input before values become available.
-        /// </summary>
-        public bool IN1 { get => _inputState[1]; }
-        /// <summary>
-        /// Gets the digital reading for input 2 whose value is either true or false.
-        /// The corresponding pin must be <see cref="EnableInputs(int[])">enabled</see> for digital input before values become available.
-        /// </summary>
-        public bool IN2 { get => _inputState[2]; }
-        /// <summary>
-        /// Gets the digital reading for input 3 whose value is either true or false.
-        /// The corresponding pin must be <see cref="EnableInputs(int[])">enabled</see> for digital input before values become available.
-        /// </summary>
-        public bool IN3 { get => _inputState[3]; }
-        /// <summary>
-        /// Gets the digital reading for input 4 whose value is either true or false.
-        /// The corresponding pin must be <see cref="EnableInputs(int[])">enabled</see> for digital input before values become available.
-        /// </summary>
-        public bool IN4 { get => _inputState[4]; }
-        */
 
         /// <summary>
         /// Enables digital inputs and events whose sources are Arduino pins defined in the firmware profile.
@@ -215,6 +188,58 @@ namespace RoboTx.Api
                 return count;
             }
         }
+
+        private volatile int _prevIRCommand = -1;
+        private DateTime _lastIRCommandTime = DateTime.MinValue;
+
+        /// <summary>
+        /// Gets the value and pressed state of an IR command button if one has been received by pressing a button on an IR remote control.
+        /// </summary>
+        /// <returns>A tuple consisting of the IR command code and its pressed state. A value of -1 for the IR command
+        /// indicates none received. A value of true for the pressed state indicates button in pressed state.
+        /// False indicates button released.</returns>
+        public IrCommand GetIRCommand()
+        {
+            lock (_robotIO.IrCommandReceivedQueue)
+            {
+                if (_robotIO.IrCommandReceivedQueue.Count != 0)
+                {
+                    (int peekCmd, DateTime cmdTime) = _robotIO.IrCommandReceivedQueue.Peek();
+
+                    if (_prevIRCommand == -1)
+                    {
+                        _robotIO.IrCommandReceivedQueue.Dequeue();
+                        _lastIRCommandTime = cmdTime;
+                        _prevIRCommand = peekCmd;
+                        return new IrCommand { Code = peekCmd, ButtonPressed = true };
+                    }
+                    if (peekCmd != _prevIRCommand)
+                    {
+                        int tmpCmd = _prevIRCommand;
+                        _prevIRCommand = -1;
+                        return new IrCommand { Code = tmpCmd, ButtonPressed = false, ButtonReleased = true };
+                    }
+                    if (cmdTime.Subtract(_lastIRCommandTime).TotalSeconds < .15)
+                    {
+                        _robotIO.IrCommandReceivedQueue.Dequeue();
+                        _lastIRCommandTime = cmdTime;
+                        return new IrCommand { Code = -1, ButtonPressed = false };
+                    }
+                    else
+                    {
+                        _prevIRCommand = -1;
+                    }
+                }
+                else if (_prevIRCommand != -1 && DateTime.Now.Subtract(_lastIRCommandTime).TotalSeconds > .15)
+                {
+                    int tmpCmd = _prevIRCommand;
+                    _prevIRCommand = -1;
+                    return new IrCommand { Code = tmpCmd, ButtonPressed = false, ButtonReleased = true };
+                }
+                return new IrCommand { Code = -1, ButtonPressed = false };
+            }
+        }
+
 
         /// <summary>
         /// Returns the digital inputs as a binary string.
