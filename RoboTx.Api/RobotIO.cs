@@ -38,6 +38,7 @@ namespace RoboTx.Api
         readonly Switch _switch2;
         readonly Switch _switch3;
         readonly Switch _switch4;
+        readonly SwitchManager _switchManager;
         readonly ConnectionState _connectionState;
 
         private volatile string _robotId = string.Empty;
@@ -135,6 +136,9 @@ namespace RoboTx.Api
 
             _connectionKeeper = new ConnectionKeeper(this);
             _runningTasks.Add(Task.Run(() => _connectionKeeper.KeepAliveTask()));
+
+            _switchManager = new SwitchManager(this);
+            _runningTasks.Add(Task.Run(() => _switchManager.ManageSwitches()));
 
             _connectionState = new ConnectionState(this);
             IsClosing = false;
@@ -351,6 +355,7 @@ namespace RoboTx.Api
         {
             _msgSender?.Cancel();
             _listener?.Cancel();
+            _switchManager?.Cancel();
 
             _connectionKeeper?.Cancel();
 
