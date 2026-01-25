@@ -27,7 +27,8 @@ namespace RoboTx.Api
         public void OnDeserializeProperty(int propertyIndex, string propertyValue)
         {
             //Debug.WriteLine($"Property Index:Value {propertyIndex}:{propertyValue}");
-            _buttonValue = int.Parse(propertyValue, NumberStyles.HexNumber);
+            _buttonValue = 0;
+            int.TryParse(propertyValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _buttonValue);
         }
 
         public void OnEndDeserialize(bool messageComplete)

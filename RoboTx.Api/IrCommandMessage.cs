@@ -31,7 +31,8 @@ namespace RoboTx.Api
             switch (propertyIndex)
             {
                 case 0:
-                    _irCommand = int.Parse(propertyValue, NumberStyles.HexNumber);
+                    _irCommand = -1;
+                    int.TryParse(propertyValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _irCommand);
                     break;
             }
 

@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 #Document generator project
 RoboTx.Api-DocGen.sln
+
+#Test projects
+Api-Test-Projects.sln

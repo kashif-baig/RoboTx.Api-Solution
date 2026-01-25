@@ -67,31 +67,35 @@ namespace RoboTx.Api
 
         public void OnDeserializeProperty(int propertyIndex, string propertyValue)
         {
+            int convertedValue = 0;
+
+            int.TryParse(propertyValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out convertedValue) ;
+
             switch (propertyIndex)
             {
                 case 0:
-                    _A0 = int.Parse(propertyValue, NumberStyles.HexNumber);
+                    _A0 = convertedValue;
                     break;
                 case 1:
-                    _A1 = int.Parse(propertyValue, NumberStyles.HexNumber);
+                    _A1 = convertedValue;
                     break;
                 case 2:
-                    _A2 = int.Parse(propertyValue, NumberStyles.HexNumber);
+                    _A2 = convertedValue;
                     break;
                 case 3:
-                    _A3 = int.Parse(propertyValue, NumberStyles.HexNumber);
+                    _A3 = convertedValue;
                     break;
                 case 4:
-                    _A4 = int.Parse(propertyValue, NumberStyles.HexNumber);
+                    _A4 = convertedValue;
                     break;
                 case 5:
-                    _A5 = int.Parse(propertyValue, NumberStyles.HexNumber);
+                    _A5 = convertedValue;
                     break;
                 case 6:
-                    _A6 = int.Parse(propertyValue, NumberStyles.HexNumber);
+                    _A6 = convertedValue;
                     break;
                 case 7:
-                    _A7 = int.Parse(propertyValue, NumberStyles.HexNumber);
+                    _A7 = convertedValue;
                     break;
             }
         }
