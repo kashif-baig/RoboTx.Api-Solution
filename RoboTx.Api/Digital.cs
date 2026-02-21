@@ -260,7 +260,7 @@ namespace RoboTx.Api
         /// <summary>
         /// Returns the digital inputs as a binary string.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Digital inputs as a binary string</returns>
         public override string ToString()
         {
             string val = string.Empty;

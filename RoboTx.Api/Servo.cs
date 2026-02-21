@@ -143,7 +143,7 @@
         /// Sets the position angle of a specified servo motor.
         /// </summary>
         /// <param name="angle">The position angle to rotate to. Must be between 0 and maximum angle range set by method SetRange().
-        /// The angle value is constrained to the limits specified using <see cref="SetAngleLimits(int, int)"/> </param>
+        /// The angle value is constrained to the limits specified using <see cref="ServoConfig.SetAngleLimits(int, int, Servo)"/> </param>
         /// <exception cref="ArgumentOutOfRangeException">angle is out of range.</exception>
         /// <exception cref="IOException">Serial port is in error state or not open.</exception>
         public void SetPosition(float angle)

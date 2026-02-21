@@ -288,7 +288,7 @@ namespace RoboTx.Api
         public ConnectionState ConnectionState => _connectionState;
 
         /// <summary>
-        /// The method should be called in the main application to signal to background threads monitoring property <see cref="IsClosing">IsClosing</see> that they should terminate gracefully.
+        /// The method should be called in the main application to signal to background threads monitoring property <see cref="ConnectionState.IsClosing">IsClosing</see> that they should terminate gracefully.
         /// </summary>
         public void NotifyClosing()
         {

@@ -21,12 +21,12 @@
         /// <summary>
         /// Implicit bool cast operator.
         /// </summary>
-        /// <param name="d"></param>
+        /// <param name="d">Intance of DigitalInput.</param>
         public static implicit operator bool(DigitalInput d) => d.Value;
         /// <summary>
         /// Returns the string representation of the value.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>String representation of the value</returns>
         public override string ToString() => $"{Value}";
     }
 }

@@ -20,7 +20,7 @@
         /// <summary>
         /// Implicit float cast operator.
         /// </summary>
-        /// <param name="a"></param>
+        /// <param name="a">AnalogInput instance.</param>
         public static implicit operator float(AnalogInput a) => a.Value;
 
         //internal Func<float, float> Convertx { get; set; }
@@ -30,7 +30,7 @@
         /// <summary>
         /// Returns the string representation of the value.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>String representation of the value</returns>
         public override string ToString() => $"{Value}";
     }
 }
