@@ -112,6 +112,8 @@ namespace RoboTx.Api
                 _analog.A5.Value = _A5 > -1 ? _A5 : _analog.A5.Value;
                 _analog.A6.Value = _A6 > -1 ? _A6 : _analog.A6.Value;
                 _analog.A7.Value = _A7 > -1 ? _A7 : _analog.A7.Value;
+
+                _analog.SetReady();
             }
         }
     }

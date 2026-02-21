@@ -105,7 +105,7 @@ namespace Messaging
                         memStream.SetLength(0);
                         streamReader.DiscardBufferedData();
 
-                        readBytes = await _stream.ReadAsync(buffer, 0, buffer.Length, _cancelTokenSource.Token);
+                            readBytes = await _stream.ReadAsync(buffer, 0, buffer.Length);//, _cancelTokenSource.Token);
 
                         memStream.Write(buffer, 0, readBytes);
                         memStream.Position = 0;
@@ -200,6 +200,11 @@ namespace Messaging
             catch (OperationCanceledException ex)
             {
                 // swallow exception.
+            }
+            catch (IOException)
+            {
+                // swallow exception.
+                Thread.Sleep(1);
             }
             catch (Exception ex)
             {

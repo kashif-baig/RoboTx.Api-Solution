@@ -13,16 +13,17 @@
         }
 
         /// <summary>
-        /// Gets the analog inpput value.
+        /// Gets the analog input value.
         /// </summary>
         public float Value { get => Convert==null ? _value : Convert(_value); internal set => _value = value; }
+
         /// <summary>
         /// Implicit float cast operator.
         /// </summary>
         /// <param name="a"></param>
         public static implicit operator float(AnalogInput a) => a.Value;
 
-        internal Func<float, float> Convertx { get; set; }
+        //internal Func<float, float> Convertx { get; set; }
 
         internal AnalogConverter Convert { get; set; }
 

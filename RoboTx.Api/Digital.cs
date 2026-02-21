@@ -211,19 +211,19 @@ namespace RoboTx.Api
                         _robotIO.IrCommandReceivedQueue.Dequeue();
                         _lastIRCommandTime = cmdTime;
                         _prevIRCommand = peekCmd;
-                        return new IrCommand { Code = peekCmd, ButtonPressed = true };
+                        return new IrCommand { Digital = _robotIO.Digital, Code = peekCmd, ButtonPressed = true };
                     }
                     if (peekCmd != _prevIRCommand)
                     {
                         int tmpCmd = _prevIRCommand;
                         _prevIRCommand = -1;
-                        return new IrCommand { Code = tmpCmd, ButtonPressed = false, ButtonReleased = true };
+                        return new IrCommand { Digital = _robotIO.Digital, Code = tmpCmd, ButtonPressed = false, ButtonReleased = true };
                     }
                     if (cmdTime.Subtract(_lastIRCommandTime).TotalSeconds < .15)
                     {
                         _robotIO.IrCommandReceivedQueue.Dequeue();
                         _lastIRCommandTime = cmdTime;
-                        return new IrCommand { Code = -1, ButtonPressed = false };
+                        return new IrCommand { Digital = _robotIO.Digital, Code = -1, ButtonPressed = false };
                     }
                     else
                     {
@@ -234,10 +234,26 @@ namespace RoboTx.Api
                 {
                     int tmpCmd = _prevIRCommand;
                     _prevIRCommand = -1;
-                    return new IrCommand { Code = tmpCmd, ButtonPressed = false, ButtonReleased = true };
+                    return new IrCommand { Digital = _robotIO.Digital, Code = tmpCmd, ButtonPressed = false, ButtonReleased = true };
                 }
-                return new IrCommand { Code = -1, ButtonPressed = false };
+                return new IrCommand { Digital = _robotIO.Digital, Code = -1, ButtonPressed = false };
             }
+        }
+
+        internal IrCommandConverter Convert { get; set; }
+
+        /// <summary>
+        /// Registers a function to convert IR command codes to a string value.
+        /// </summary>
+        /// <param name="converter">A <see cref="IrCommandConverter">function</see> to convert IR command codes to a string value.</param>
+        /// <exception cref="ArgumentNullException">converter is null.</exception>
+        public void UseIrCommandConverter(IrCommandConverter converter)
+        {
+            if (converter == null)
+            {
+                throw new ArgumentNullException(nameof(converter));
+            }
+            Convert = converter;
         }
 
 

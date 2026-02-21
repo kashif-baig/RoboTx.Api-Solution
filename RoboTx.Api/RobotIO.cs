@@ -1,5 +1,6 @@
 ﻿using Messaging;
 using System.IO.Ports;
+using System.Reflection;
 
 namespace RoboTx.Api
 {
@@ -7,11 +8,11 @@ namespace RoboTx.Api
     /// <summary>
     /// The main class through which input and output operations are performed with devices and components connected to the Arduino.
     /// </summary>
-    public class RobotIO : IDisposable
+    public partial class RobotIO : IDisposable
     {
         readonly SerialPort _serialPort;
         readonly Queue<(int, DateTime)> _irCommandReceivedQueue;
-        readonly MyMessageDeserializerFactory _factory;
+        readonly DeserializableMessageFactory _factory;
 
         readonly DisplayLed _display7Seg;
         readonly DisplayLcd _displayLcd;
@@ -32,8 +33,6 @@ namespace RoboTx.Api
         readonly ServoConfig _servoConfig;
         readonly Config _config;
 
-        readonly PulseCounter _pulseCounter;
-        readonly ColourSensor _colour;
         readonly Switch _switch1;
         readonly Switch _switch2;
         readonly Switch _switch3;
@@ -41,7 +40,7 @@ namespace RoboTx.Api
         readonly SwitchManager _switchManager;
         readonly ConnectionState _connectionState;
 
-        private volatile string _robotId = string.Empty;
+        private volatile string _robotId = null;
 
         MessageListener _listener;
         MessageSender _msgSender;
@@ -55,6 +54,16 @@ namespace RoboTx.Api
 
         private bool disposedValue;
         private volatile bool _isClosing;
+
+        /// <summary>
+        /// Instantiates optional classes.
+        /// </summary>
+        partial void InstantiateOptional();
+
+        /// <summary>
+        /// Performs optional check on environment settings.
+        /// </summary>
+        partial void EnvironmentCheck();
 
         /// <summary>
         /// Event is triggered when a Listener IO exception occurs. The event handler will likely be
@@ -79,10 +88,10 @@ namespace RoboTx.Api
         public string RobotId { get => _robotId; internal set => _robotId = value; }
 
         /// <summary>
-        /// Constructs an instance using a serial port name, 57600 baud rate and data terminal ready as false.
+        /// Constructs an instance using a serial port name, 115200 baud rate and data terminal ready as true.
         /// </summary>
         /// <param name="port">Serial port name.</param>
-        public RobotIO(string port) :this(port, 57600, false)
+        public RobotIO(string port) :this(port, 115200, false)
         {
             
         }
@@ -118,17 +127,18 @@ namespace RoboTx.Api
 
             _sonar = new Sonar(this);
             _config = new Config(this);
-            _pulseCounter = new PulseCounter(this);
             _digital = new Digital(this);
-            _colour = new ColourSensor(this);
 
             _switch1 = new Switch(this, 1);
             _switch2 = new Switch(this, 2);
             _switch3 = new Switch(this, 3);
             _switch4 = new Switch(this, 4);
 
+            // instantiate additional classes implemented in partial method.
+            InstantiateOptional();
+
             _irCommandReceivedQueue = new Queue<(int, DateTime)>();
-            _factory = new MyMessageDeserializerFactory(this);
+            _factory = new DeserializableMessageFactory(this);
 
             // Start the message sender as a separate task.
             _msgSender = new MessageSender();
@@ -141,6 +151,7 @@ namespace RoboTx.Api
             _runningTasks.Add(Task.Run(() => _switchManager.ManageSwitches()));
 
             _connectionState = new ConnectionState(this);
+
             IsClosing = false;
         }
 
@@ -150,6 +161,16 @@ namespace RoboTx.Api
         /// <exception cref="FileNotFoundException">Serial port was not found.</exception>
         public void Connect()
         {
+            try
+            {
+                Console.WriteLine(Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyProductAttribute>().Product);
+                EnvironmentCheck();
+            }
+            finally
+            {
+
+            }
+            Console.WriteLine("Connecting ...");
             IsClosing = false;
 
             _serialPort.Open();
@@ -174,14 +195,80 @@ namespace RoboTx.Api
             // Start the message listener as a separate task.
             _listenerTask = _listener.ProcessMessageStream();
 
-            // A delay to allow incoming analog or digital input values to be received.
-            Thread.Sleep(700);
+            _analog.Enable();
+
+            //Thread.Sleep(700);
+
+            // A delay to allow incoming Robot ID to be received.
+            DateTime waitRobotIdStart = DateTime.Now;
+
+            while ((DateTime.Now - waitRobotIdStart).TotalMilliseconds < 1000 && _robotId == null)
+            {
+                Thread.Sleep(50);
+            }
+            Console.WriteLine("OK");
         }
 
         private void listener_IOErrorOccurred(object sender, MessageListenerErrorEventArgs e)
         {
             OnListenerErrorOccurred(e);
         }
+
+        /// <summary>
+        /// Waits up to 2000ms for specified sensors to become ready. The sensors must have been enabled beforehand.
+        /// Analog sensors are enabled by default.
+        /// </summary>
+        /// <param name="sensors">One or more <see cref="ContinuousSensor">sensors</see> that can report whether they are ready or not.</param>
+        /// <returns>true if the sensors are ready within the timeout period, false otherwise.</returns>
+        /// <exception cref="ArgumentNullException">sensors is null or empty.</exception>
+        public bool WaitUntilSensorsReady(params ContinuousSensor[] sensors)
+        {
+            return WaitUntilSensorsReady(2000, sensors);
+        }
+
+
+        /// <summary>
+        /// Waits up to the timeout period for specified sensors to become ready. The sensors must have been enabled beforehand.
+        /// Analog sensors are enabled by default.
+        /// </summary>
+        /// <param name="timeoutMs">A timeout specified in milliseconds.</param>
+        /// <param name="sensors">One or more <see cref="ContinuousSensor">sensors</see> that can report whether they are ready or not.</param>
+        /// <returns>true if the sensors are ready within the timeout period, false otherwise.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">timeoutMs must be greater than 0 and less than or equal to 5000.</exception>
+        /// <exception cref="ArgumentNullException">sensors is null or empty.</exception>
+        public bool WaitUntilSensorsReady(int timeoutMs, params ContinuousSensor[] sensors)
+        {
+            if (timeoutMs <= 0 || timeoutMs > 5000)
+            {
+                throw new ArgumentOutOfRangeException(nameof(timeoutMs));
+            }
+            if (sensors == null)
+            {
+                throw new ArgumentNullException(nameof(sensors));
+            }
+            if (sensors.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(sensors));
+            }
+            bool sensorsAreReady = false;
+            DateTime start = DateTime.Now;
+
+            while ((DateTime.Now - start).TotalMilliseconds < timeoutMs && !sensorsAreReady)
+            {
+                sensorsAreReady = true;
+                foreach (ContinuousSensor sensor in sensors)
+                {
+                    if (!sensor.IsReady)
+                    {
+                        sensorsAreReady = false;
+                        Thread.Sleep(50);
+                        break;
+                    }
+                }
+            }
+            return sensorsAreReady;
+        }
+
 
         /// <summary>
         /// Returns true if the serial port is connected to the Arduino, false otherwise.
@@ -290,21 +377,10 @@ namespace RoboTx.Api
         /// Sets a digital output to on or off.
         /// </summary>
         public Switch Switch4 => _switch4;
-
-        /// <summary>
-        /// Reports values read using TCS34725 sensor.
-        /// </summary>
-        public ColourSensor ColourSensor => _colour;
-
         /// <summary>
         /// Configures some devices connected to the robot.
         /// </summary>
         internal Config Config => _config;
-
-        /// <summary>
-        /// Calculates period of input pulses on a designated Arduino pin.
-        /// </summary>
-        public PulseCounter PulseCounter => _pulseCounter;
 
         /// <summary>
         /// Exposes digital input readings.
@@ -367,6 +443,7 @@ namespace RoboTx.Api
 
             if (_serialPort.IsOpen)
             {
+                Console.WriteLine("Disconnecting.");
                 ConnectionMessage connMsg = new ConnectionMessage(StreamWriter);
                 connMsg.Close();
                 connMsg.Serialize();

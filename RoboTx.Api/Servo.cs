@@ -6,6 +6,7 @@
     /// </summary>
     public sealed class Servo
     {
+        private const int MAX_SPEED = 10;
         private readonly RobotIO _robotIO;
         private readonly ServoRange _servoRange = new ServoRange();
         private readonly int _servoNumber;
@@ -18,7 +19,7 @@
             _robotIO = robotIO;
             _servoNumber = servoNumber;
             _position = 93;
-            _maxSpeed = 50;
+            _maxSpeed = MAX_SPEED;
         }
 
         /// <summary>
@@ -28,7 +29,7 @@
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         internal void SetSpeedLimit(int maxSpeed)
         {
-            if (maxSpeed < 1 || maxSpeed > 50)
+            if (maxSpeed < 1 || maxSpeed > MAX_SPEED)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxSpeed));
             }
@@ -112,19 +113,21 @@
         /// Sets the speed with which the servo moves to a specified position. The actual speed and range of speed
         /// will depend on the type of servo used. By default the servo is set to move at maximum speed.
         /// </summary>
-        /// <param name="speedStep">A value starting from 1 (slowest) to 50 (fastest) that correlates with servo speed.</param>
+        /// <param name="speed">A value starting from 1 (slowest) to 10 (fastest) that correlates with servo speed.</param>
         /// <exception cref="ArgumentOutOfRangeException">speedStep is out of range.</exception>
         /// <exception cref="IOException">Serial port is in error state or not open.</exception>
-        public void SetSpeed(int speedStep)
+        public void SetSpeed(int speed)
         {
-            if (speedStep < 1 || speedStep > 50)
+            int[] speedStepArray = {1,2,3,4,6,9,14,21,32,50};
+
+            if (speed < 1 || speed > MAX_SPEED)
             {
-                throw new ArgumentOutOfRangeException(nameof(speedStep));
+                throw new ArgumentOutOfRangeException(nameof(speed));
             }
             _robotIO.CheckSerialState();
 
             ServoMessage msg = new ServoMessage(_robotIO.StreamWriter);
-            msg.SetSpeedStep(_servoNumber, Utility.Constrain(speedStep, 1, _maxSpeed));
+            msg.SetSpeedStep(_servoNumber, Utility.Constrain(speedStepArray[speed-1], 1, speedStepArray[_maxSpeed-1]));
             _robotIO.MessageSender.EnQueueMessage(msg);
         }
 

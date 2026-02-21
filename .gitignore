@@ -367,3 +367,6 @@ RoboTx.Api-DocGen.sln
 
 #Test projects
 Api-Test-Projects.sln
+
+#Python stub generator project
+PythonStubGen.sln

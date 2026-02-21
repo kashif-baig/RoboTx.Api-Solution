@@ -10,7 +10,7 @@
     /// <summary>
     /// Configures and reports analog inputs via Arduino pins A0 to A7.
     /// </summary>
-    public sealed class Analog
+    public sealed class Analog : ContinuousSensor
     {
         readonly private RobotIO _robotIO;
 
@@ -32,7 +32,7 @@
         /// Assigns a function to one or more analog inputs to convert the normal range of analog values from 0 to 1023,
         /// to another range of values.
         /// </summary>
-        /// <param name="converter">A function that converts the analog values to another range of values.</param>
+        /// <param name="converter">A <see cref="AnalogConverter">function</see> that converts the analog values to another range of values.</param>
         /// <param name="input">One or more analog inputs.</param>
         /// <exception cref="ArgumentNullException">converter is null or input is null.</exception>
         public void UseConverter(AnalogConverter converter, params AnalogInput[] input)
@@ -90,6 +90,8 @@
             ConfigMessage msg = new ConfigMessage(_robotIO.StreamWriter);
             msg.EnableAnalogInputs(true, inputPins);
             _robotIO.MessageSender.EnQueueMessage(msg);
+
+            Enable();
         }
 
         /// <summary>
@@ -108,6 +110,8 @@
             ConfigMessage msg = new ConfigMessage(_robotIO.StreamWriter);
             msg.EnableAnalogInputs(false, inputPins);
             _robotIO.MessageSender.EnQueueMessage(msg);
+
+            Disable();
         }
 
         /// <summary>

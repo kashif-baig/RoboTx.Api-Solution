@@ -30,7 +30,7 @@
         /// <summary>
         /// Sets the maximum speed of the servos.
         /// </summary>
-        /// <param name="maxSpeed">Maximum speed of the servo whose value is between 1 and 50 inclusive.</param>
+        /// <param name="maxSpeed">Maximum speed of the servo whose value is between 1 and 10 inclusive.</param>
         /// <param name="servo">The servo that will be affected.</param>
         /// <exception cref="ArgumentNullException">servo is null or has null elements.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxSpeed is out of range.</exception>

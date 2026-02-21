@@ -2,16 +2,11 @@
 
 namespace RoboTx.Api
 {
-    internal class MyMessageDeserializerFactory : IDeserializableMessageFactory
+    internal abstract class DeserializableMessageFactoryBase
     {
-        private RobotIO _robotIO;
+        protected RobotIO _robotIO;
 
-        public MyMessageDeserializerFactory(RobotIO robotIO)
-        {
-            _robotIO = robotIO;
-        }
-
-        public IDeserializableMessage GetMessageDeserializer(string messageType)
+        public virtual IDeserializableMessage GetMessageDeserializer(string messageType)
         {
             if (messageType == ButtonMessage.MessageType)
             {
@@ -20,14 +15,6 @@ namespace RoboTx.Api
             if (messageType == AnalogMessage.MessageType)
             {
                 return new AnalogMessage(_robotIO.Analog);
-            }
-            if (messageType == PulseCounterMessage.MessageType)
-            {
-                return new PulseCounterMessage(_robotIO.PulseCounter);
-            }
-            if (messageType == ColourMessage.MessageType)
-            {
-                return new ColourMessage(_robotIO.ColourSensor);
             }
             if (messageType == SonarMessage.MessageType)
             {
@@ -45,7 +32,6 @@ namespace RoboTx.Api
             {
                 return new InfoMessage(_robotIO);
             }
-
             return null;
         }
     }

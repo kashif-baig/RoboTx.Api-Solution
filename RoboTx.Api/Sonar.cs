@@ -11,12 +11,14 @@
     {
         private readonly RobotIO _robotIO;
         volatile private int _distance;
+        private DateTime _lastPingTime;
         object _lockobj = new object();
 
         internal Sonar(RobotIO robotIO)
         {
             _robotIO = robotIO;
             _distance = -1;
+            _lastPingTime = DateTime.Now;
         }
 
         /// <summary>
@@ -25,10 +27,16 @@
         /// <exception cref="IOException">Serial port is in error state or not open.</exception>
         public void Ping()
         {
+            if (!DistanceAcquired && (DateTime.Now - _lastPingTime).TotalMilliseconds < 50)
+            {
+                return;
+            }
             _robotIO.CheckSerialState();
 
             SonarMessage msg = new SonarMessage(_robotIO.StreamWriter);
             _robotIO.MessageSender.EnQueueMessage(msg, true);
+
+            _lastPingTime = DateTime.Now;
         }
 
         /// <summary>

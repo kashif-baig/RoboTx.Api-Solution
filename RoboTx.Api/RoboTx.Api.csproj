@@ -6,11 +6,18 @@
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <Title>Robo-Tx API that commuicates with Robo-Tx firmware on Arduino</Title>
+    <Title>Robo-Tx API Lite Edition.</Title>
     <Authors>Kashif Baig</Authors>
-    <Copyright>2025 Kashif Baig</Copyright>
+    <Copyright>2026 Kashif Baig</Copyright>
     <PackageProjectUrl>https://www.cohesivecomputing.co.uk/robo-tx/</PackageProjectUrl>
+    <Product>Robo-Tx API Lite Edition</Product>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Education Edition\**" />
+    <EmbeddedResource Remove="Education Edition\**" />
+    <None Remove="Education Edition\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\Messaging\Enums.cs" Link="Messaging\Enums.cs" />
