@@ -103,9 +103,7 @@ namespace Messaging
                     while (!_cancelTokenSource.IsCancellationRequested)
                     {
                         memStream.SetLength(0);
-                        streamReader.DiscardBufferedData();
-
-                            readBytes = await _stream.ReadAsync(buffer, 0, buffer.Length);//, _cancelTokenSource.Token);
+                        readBytes = await _stream.ReadAsync(buffer, 0, buffer.Length);//, _cancelTokenSource.Token);
 
                         memStream.Write(buffer, 0, readBytes);
                         memStream.Position = 0;
