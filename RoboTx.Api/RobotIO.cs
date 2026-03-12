@@ -91,7 +91,7 @@ namespace RoboTx.Api
         /// Constructs an instance using a serial port name, 115200 baud rate and data terminal ready as true.
         /// </summary>
         /// <param name="port">Serial port name.</param>
-        public RobotIO(string port) :this(port, 115200, false)
+        public RobotIO(string port) :this(port, 115200, true)
         {
             
         }
@@ -176,14 +176,16 @@ namespace RoboTx.Api
             _serialPort.Open();
             _serialStreamWriter = new StreamWriter(_serialPort.BaseStream);
 
-            string osVersion = Environment.OSVersion.Platform.ToString().ToLower();
+            //string osVersion = Environment.OSVersion.Platform.ToString().ToLower();
 
-            if (osVersion != "win32nt")
-            {
-                // On some OS platforms, opening the serial port resets the Arduino.
-                // The additional delay allows the Arduino to settle down.
-                Thread.Sleep(600);
-            }
+            //if (osVersion != "win32nt")
+            //{
+            //    // On some OS platforms, opening the serial port resets the Arduino.
+            //    // The additional delay allows the Arduino to settle down.
+            //    Thread.Sleep(600);
+            //}
+
+            Thread.Sleep(500);
 
             ConnectionMessage connMsg = new ConnectionMessage(_serialStreamWriter);
             connMsg.Open();
