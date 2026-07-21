@@ -416,7 +416,7 @@ namespace RoboTx.Api
         {
             if (InBreakState)
             {
-                throw new IOException(ErrorMessageText.SERIAL_PORT_ERROR_STATE);
+                throw new IOException(ErrorMessageText.SERIAL_PORT_BREAK_STATE);
             }
             if (StreamWriter == null)
             {
@@ -431,6 +431,9 @@ namespace RoboTx.Api
         /// </summary>
         public void Close()
         {
+            // Allow queued up requests to be processed
+            Thread.Sleep(100);
+
             _msgSender?.Cancel();
             _listener?.Cancel();
             _switchManager?.Cancel();

@@ -22,9 +22,7 @@ namespace RoboTx.Api
         private volatile int _speedStep = 0;
         private volatile int _pulseWidth = 0;
         private volatile int _servoNumber = 1;
-        //private volatile bool _stop = false;
 
-        //private volatile bool _setRange = false;
         private volatile int _minPulseWidth = 0;
         private volatile int _maxPulseWidth = 0;
 
@@ -47,17 +45,14 @@ namespace RoboTx.Api
 
         public void SetRange(int servoNumber, int min, int max)
         {
-            //ValidateServoNumber(servoNumber);
             _servoNumber = servoNumber;
             _minPulseWidth = min;
             _maxPulseWidth = max;
-            //_setRange = true;
             _servoCmd = ServoCommand.SetRange;
         }
 
         public void SetPulseWidth(int servoNumber, int pulseWidth)
         {
-            //ValidateServoNumber(servoNumber);
             _servoNumber = servoNumber;
             _pulseWidth = pulseWidth;
 
@@ -65,9 +60,7 @@ namespace RoboTx.Api
 
         public void Stop(int servoNumber)
         {
-            //ValidateServoNumber(servoNumber);
             _servoNumber = servoNumber;
-            //_stop = true;
             _servoCmd = ServoCommand.Stop;
         }
 
@@ -95,13 +88,5 @@ namespace RoboTx.Api
             }
 
         }
-
-        //private static void ValidateServoNumber(int servoNumber)
-        //{
-        //    if (servoNumber < 1 || servoNumber > 4)
-        //    {
-        //        throw new ArgumentOutOfRangeException(nameof(servoNumber));
-        //    }
-        //}
     }
 }

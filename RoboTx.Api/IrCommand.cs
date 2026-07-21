@@ -33,7 +33,7 @@
         public bool Received { get => Code >= 0; }
 
         /// <summary>
-        /// Uese the registered <see cref="IrCommandConverter">IrCommandConverter</see> function to convert a received IR command code to a string value.
+        /// Uses the registered <see cref="IrCommandConverter">IrCommandConverter</see> function to convert a received IR command code to a string value.
         /// </summary>
         public string Name { get => Digital?.Convert == null || !Received ? string.Empty : Digital.Convert(Code); }
 

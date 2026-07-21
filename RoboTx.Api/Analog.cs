@@ -161,7 +161,7 @@
         /// <param name="inputPins"></param>
         /// <exception cref="ArgumentException">inputPins is null or not supplied.</exception>
         /// <exception cref="ArgumentOutOfRangeException">inputPins contains out of range value.</exception>
-        internal void ValidateInputPins(params int[] inputPins)
+        private void ValidateInputPins(params int[] inputPins)
         {
             if (inputPins == null || inputPins.Length == 0)
             {
