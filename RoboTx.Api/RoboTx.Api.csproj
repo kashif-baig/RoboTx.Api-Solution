@@ -1,41 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <Title>Robo-Tx API Lite Edition.</Title>
-    <Authors>Kashif Baig</Authors>
-    <Copyright>2026 Kashif Baig</Copyright>
-    <PackageProjectUrl>https://www.cohesivecomputing.co.uk/robo-tx/</PackageProjectUrl>
-    <Product>Robo-Tx API Lite Edition</Product>
-    <AssemblyName>Robo-Tx.Api</AssemblyName>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+		<Title>Robo-Tx API Lite Edition.</Title>
+		<Authors>Kashif Baig</Authors>
+		<Copyright>2026 Kashif Baig</Copyright>
+		<PackageProjectUrl>https://www.cohesivecomputing.co.uk/robo-tx/</PackageProjectUrl>
+		<Product>Robo-Tx API Lite Edition</Product>
+		<AssemblyName>Robo-Tx.Api</AssemblyName>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Education Edition\**" />
-    <EmbeddedResource Remove="Education Edition\**" />
-    <None Remove="Education Edition\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+			<_Parameter1>PackageProjectUrl</_Parameter1>
+			<_Parameter2>$(PackageProjectUrl)</_Parameter2>
+		</AssemblyAttribute>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Messaging\Enums.cs" Link="Messaging\Enums.cs" />
-    <Compile Include="..\Messaging\IDeserializableMessage.cs" Link="Messaging\IDeserializableMessage.cs" />
-    <Compile Include="..\Messaging\IDeserializableMessageFactory.cs" Link="Messaging\IDeserializableMessageFactory.cs" />
-    <Compile Include="..\Messaging\MessageListener.cs" Link="Messaging\MessageListener.cs" />
-    <Compile Include="..\Messaging\MessageSender.cs" Link="Messaging\MessageSender.cs" />
-    <Compile Include="..\Messaging\SerializableMessage.cs" Link="Messaging\SerializableMessage.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Education Edition\**" />
+		<EmbeddedResource Remove="Education Edition\**" />
+		<None Remove="Education Edition\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.IO.Ports" Version="10.0.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\Messaging\Enums.cs" Link="Messaging\Enums.cs" />
+		<Compile Include="..\Messaging\IDeserializableMessage.cs" Link="Messaging\IDeserializableMessage.cs" />
+		<Compile Include="..\Messaging\IDeserializableMessageFactory.cs" Link="Messaging\IDeserializableMessageFactory.cs" />
+		<Compile Include="..\Messaging\MessageListener.cs" Link="Messaging\MessageListener.cs" />
+		<Compile Include="..\Messaging\MessageSender.cs" Link="Messaging\MessageSender.cs" />
+		<Compile Include="..\Messaging\SerializableMessage.cs" Link="Messaging\SerializableMessage.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Messaging\" />
-    <Folder Include="ContentToDeploy\" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="System.IO.Ports" Version="10.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Messaging\" />
+		<Folder Include="ContentToDeploy\" />
+	</ItemGroup>
 
 </Project>

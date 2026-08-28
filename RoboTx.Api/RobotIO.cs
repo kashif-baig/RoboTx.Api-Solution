@@ -163,7 +163,23 @@ namespace RoboTx.Api
         {
             try
             {
-                Console.WriteLine(Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyProductAttribute>().Product);
+                // Get the current running assembly
+                var assembly = Assembly.GetExecutingAssembly();
+
+                Console.WriteLine(assembly.GetCustomAttribute<AssemblyProductAttribute>().Product);
+
+                // Retrieve all metadata attributes
+                var metadataAttributes = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
+                // Find the specific key we injected
+                foreach (var attr in metadataAttributes)
+                {
+                    if (attr.Key == "PackageProjectUrl")
+                    {
+                        Console.WriteLine(attr.Value);
+                        break;
+                    }
+                }
+
                 EnvironmentCheck();
             }
             finally
@@ -175,15 +191,6 @@ namespace RoboTx.Api
 
             _serialPort.Open();
             _serialStreamWriter = new StreamWriter(_serialPort.BaseStream);
-
-            //string osVersion = Environment.OSVersion.Platform.ToString().ToLower();
-
-            //if (osVersion != "win32nt")
-            //{
-            //    // On some OS platforms, opening the serial port resets the Arduino.
-            //    // The additional delay allows the Arduino to settle down.
-            //    Thread.Sleep(600);
-            //}
 
             Thread.Sleep(500);
 
@@ -198,8 +205,6 @@ namespace RoboTx.Api
             _listenerTask = _listener.ProcessMessageStream();
 
             _analog.Enable();
-
-            //Thread.Sleep(700);
 
             // A delay to allow incoming Robot ID to be received.
             DateTime waitRobotIdStart = DateTime.Now;
