@@ -164,17 +164,6 @@
             Drive(speedPercent, false);
         }
 
-        ///// <summary>
-        ///// Drives the motor at a percentage of its maximum speed (either forward or reverse) and overrides any previously set acceleration.
-        ///// </summary>
-        ///// <param name="speedPercent">Percentage of motor's maximum speed, e.g. -50 or +90.</param>
-        ///// <param name="overrideAcceleration">If set to true, drives motor at specified speed immediately. Otherwise
-        ///// motor accelerates to specified speed using previously set acceleration value.</param>
-        ///// <exception cref="IOException">Serial port is in error state or not open.</exception>
-        //public void Drive(float speedPercent, bool overrideAcceleration)
-        //{
-        //    Drive(ToInt(speedPercent), overrideAcceleration);
-        //}
 
         /// <summary>
         /// Drives the motor at a percentage of its maximum speed (either forward or reverse).
@@ -188,6 +177,7 @@
 
         /// <summary>
         /// Configures motor acceleration by specifying the time (in seconds) it takes to reach maximum speed from stationary position.
+        /// The motor will also decelerate at the same rate.
         /// </summary>
         /// <param name="timeToMaxSpeed">Time (in seconds) to reach maximum speed from stationary. Minimum value is 0, maximum is 10.</param>
         /// <exception cref="ArgumentOutOfRangeException">timeToMaxSpeed is out of range.</exception>

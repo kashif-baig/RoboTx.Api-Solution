@@ -59,9 +59,9 @@
         /// <summary>
         /// Sets the rate at which the analog pins are sampled.
         /// </summary>
-        /// <param name="sampleRateHz">Sample rate in hertz in the range of 1 to 50.</param>
+        /// <param name="sampleRateHz">Sample rate in hertz in the range of 1 to 100.</param>
         /// <exception cref="IOException">Serial port is in error state or not open.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">sampleRateHz has value less than 1 or greater than 50.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">sampleRateHz has value less than 1 or greater than 100.</exception>
         public void SetSampleRate(int sampleRateHz)
         {
             _robotIO.CheckSerialState();
@@ -73,7 +73,7 @@
 
         /// <summary>
         /// Enables analog inputs whose sources are Arduino pins A0, A1, A2, A3, A4, A5, A6 and A7.
-        /// The default sample rate is 10Hz.
+        /// The default sample rate is 20Hz.
         /// A short delay may need to be implemented after a call to this method to allow analog values to start being received.
         /// Enable only the input sources that are needed.
         /// Digital inputs for the specified Arduino pins are disabled.

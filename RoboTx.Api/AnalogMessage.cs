@@ -35,10 +35,10 @@ namespace RoboTx.Api
         /// 
         /// </summary>
         /// <param name="sampleRateHz"></param>
-        /// <exception cref="ArgumentOutOfRangeException">sampleRateHz has value less than 1 or greater than 50.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">sampleRateHz has value less than 1 or greater than 100.</exception>
         public void SetSampleRate(int sampleRateHz)
         {
-            if (sampleRateHz < 1 || sampleRateHz > 50)
+            if (sampleRateHz < 1 || sampleRateHz > 100)
             {
                 throw new ArgumentOutOfRangeException(nameof(sampleRateHz));
             }

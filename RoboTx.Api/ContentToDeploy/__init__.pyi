@@ -71,7 +71,7 @@ class Analog(ContinuousSensor):
         """Disables analog inputs whose sources are Arduino pins A0, A1, A2, A3, A4, A5, A6 and A7. Digital inputs for the specified Arduino pins are also disabled."""
         ...
     def EnableInputsA(self, inputPins: Array_1[int]) -> None: 
-        """Enables analog inputs whose sources are Arduino pins A0, A1, A2, A3, A4, A5, A6 and A7. The default sample rate is 10Hz. A short delay may need to be implemented after a call to this method to allow analog values to start being received. Enable only the input sources that are needed. Digital inputs for the specified Arduino pins are disabled."""
+        """Enables analog inputs whose sources are Arduino pins A0, A1, A2, A3, A4, A5, A6 and A7. The default sample rate is 20Hz. A short delay may need to be implemented after a call to this method to allow analog values to start being received. Enable only the input sources that are needed. Digital inputs for the specified Arduino pins are disabled."""
         ...
     def SetSampleRate(self, sampleRateHz: int) -> None: 
         """Sets the rate at which the analog pins are sampled."""
@@ -467,7 +467,7 @@ class Motor:
         """Returns true if a previously set duration for driving the motor has lapsed. Returns false otherwise."""
         ...
     def SetAcceleration(self, timeToMaxSpeed: float) -> None: 
-        """Configures motor acceleration by specifying the time (in seconds) it takes to reach maximum speed from stationary position."""
+        """Configures motor acceleration by specifying the time (in seconds) it takes to reach maximum speed from stationary position. The motor will also decelerate at the same rate."""
         ...
     def StopAccelerating(self) -> None: 
         """If motor is accelerating, holds the motor at the current speed."""
